@@ -3,7 +3,7 @@ let username = "";
 let gistData = {};
 let saveTimeout;
 
-const GIST_ID = "YOUR_GIST_ID_HERE";
+let GIST_ID = "YOUR_GIST_ID_HERE"; // can be empty ""
 
 function openLogin() {
   loginModal.style.display = "block";
@@ -28,21 +28,60 @@ async function login() {
     return;
   }
 
-  const gistRes = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
-    headers: { Authorization: "token " + token }
-  });
+  // Try loading gist
+  let gistRes = null;
 
-  if (!gistRes.ok) {
-    alert("Error F0-TOKEN-NO-GIST-ACCESS");
-    return;
+  if (GIST_ID) {
+    gistRes = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
+      headers: { Authorization: "token " + token }
+    });
   }
 
-  gistData = await gistRes.json();
+  // ❌ If not accessible → auto create
+  if (!gistRes || !gistRes.ok) {
+    console.warn("Gist not accessible → creating new one...");
+    await createNewGist();
+  } else {
+    gistData = await gistRes.json();
+  }
 
   setupEditor();
 
   loginModal.style.display = "none";
   editorModal.style.display = "block";
+}
+
+// 🆕 CREATE GIST
+async function createNewGist() {
+  const res = await fetch("https://api.github.com/gists", {
+    method: "POST",
+    headers: {
+      Authorization: "token " + token,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      description: "F0 Secure Auto Gist",
+      public: false,
+      files: {
+        "data.txt": {
+          content: btoa("Welcome to F0 Secure 🚀")
+        }
+      }
+    })
+  });
+
+  if (!res.ok) {
+    alert("Error F0-TOKEN-NO-GIST-ACCESS");
+    throw new Error("Cannot create gist");
+  }
+
+  const data = await res.json();
+
+  GIST_ID = data.id;
+  gistData = data;
+
+  console.log("New Gist Created:", GIST_ID);
+  alert("New private gist created automatically ✅");
 }
 
 function setupEditor() {
