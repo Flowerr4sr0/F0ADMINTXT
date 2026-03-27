@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>F0 Secure</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="topbar">F0 Secure</div>
+
+<div class="center">
+  <button class="btn" onclick="openLogin()">Login</button>
+</div>
+
+<!-- LOGIN -->
+<div class="modal" id="loginModal">
+  <div class="card">
+    <h2>Login</h2>
+    <input id="tokenInput" placeholder="Enter GitHub Token">
+    <button class="btn" onclick="login()">Continue</button>
+  </div>
+</div>
+
+<!-- EDITOR -->
+<div class="modal" id="editorModal">
+  <div class="card large">
+    <div class="row">
+      <select id="fileSelect" onchange="loadFile()"></select>
+      <input id="newFileName" placeholder="newfile.txt">
+      <button class="btn small" onclick="addFile()">+</button>
+    </div>
+
+    <textarea id="editor"></textarea>
+
+    <div class="row">
+      <span id="status">Idle</span>
+      <button class="btn small" onclick="closeEditor()">Close</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
