@@ -3,7 +3,7 @@ let username = "";
 let gistData = {};
 let saveTimeout;
 
-let GIST_ID = "YOUR_GIST_ID_HERE"; // can be empty ""
+let GIST_ID = ""; // can be empty ""
 
 function openLogin() {
   loginModal.style.display = "block";
